@@ -1,0 +1,68 @@
+#pragma once
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <memory>
+
+using namespace std;
+namespace libtarpp
+{
+	class TarContents
+	{
+		string name;
+		string mode;
+		string uid;
+		string gid;
+		string size;
+		string mtime;
+		string chksum;
+		string typeflag;
+		int lflag;
+		string linkname;
+		public:
+		static const string magic;
+		static const string version;
+		private:
+		string uname;
+		string gname;
+		string devmajor;
+		string devminor;
+
+
+		shared_ptr<stringstream> data;
+
+		bool isOctal(const string numstring);
+		bool isNum(const string numstring);
+		string regulateUGId(const string id);
+		public:
+		TarContents();
+		string getName();
+		void setName(const string name);
+		string getMode();
+		void setMode(const string m);
+		string getUid();
+		void setUid(const string id);
+		string getGid();
+		void setGid(const string id);
+		string getSize();
+		void setSize(const string s);
+		string getMTime();
+		void setMTime(const string m);
+		string getChkSum();
+		void setChkSum(const string c);
+		string getTypeFlag();
+		void setTypeFlag(const string f);
+		string getLinkName();
+		void setLinkName(const string ln);
+		string getUName();
+		void setUName(const string un);
+		string getGName();
+		void setGName(const string gn);
+		string getDevMajor();
+		void setDevMajor(const string dma);
+		string getDevMinor();
+		void setDevMinor(const string dmi);
+	};
+}
