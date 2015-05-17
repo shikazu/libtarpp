@@ -19,7 +19,7 @@ namespace libtarpp
 		string mtime;
 		string chksum;
 		string typeflag;
-		int lflag;
+		//int lflag;
 		string linkname;
 		public:
 		static const string magic;
@@ -29,9 +29,10 @@ namespace libtarpp
 		string gname;
 		string devmajor;
 		string devminor;
+		string prefix;
 
 
-		shared_ptr<stringstream> data;
+		shared_ptr<ios> stream;
 
 		bool isOctal(const string numstring);
 		bool isNum(const string numstring);
@@ -52,6 +53,7 @@ namespace libtarpp
 		void setMTime(const string m);
 		string getChkSum();
 		void setChkSum(const string c);
+		void autoChkSum();
 		string getTypeFlag();
 		void setTypeFlag(const string f);
 		string getLinkName();
@@ -64,5 +66,9 @@ namespace libtarpp
 		void setDevMajor(const string dma);
 		string getDevMinor();
 		void setDevMinor(const string dmi);
+		string getPrefix();
+		void setPrefix(const string p);
+		shared_ptr<ios> getStream();
+		void setStream(const shared_ptr<ios> s);
 	};
 }

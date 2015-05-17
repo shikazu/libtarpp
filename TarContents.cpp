@@ -1,7 +1,9 @@
 #include <string>
 #include <iostream>
+#include <sstream>
+#include <numeric>
 #include "TarContents.hpp"
-
+using namespace std;
 libtarpp::TarContents::TarContents()
 {
 	setName("");
@@ -16,10 +18,11 @@ libtarpp::TarContents::TarContents()
 	setGName("root");
 	setDevMajor("0");
 	setDevMinor("0");
+	setPrefix("");
 }
 
 const string libtarpp::TarContents::magic = "ustar ";
-const string libtarpp::TarContents::version = "00";
+const string libtarpp::TarContents::version = string{' ','\0'};
 
 bool libtarpp::TarContents::isOctal(const string numstring)
 {
@@ -180,18 +183,18 @@ string libtarpp::TarContents::getSize()
 
 void libtarpp::TarContents::setSize(const string s)
 {
-	if(s.size() == 12 && isNum(s.substr(0,11)))
+	if(s.size() == 12 && isOctal(s.substr(0,11)))
 	{
 		size = s;
 	}
-	if(s.size() == 11 && isNum(s))
+	if(s.size() == 11 && isOctal(s))
 	{
 		string tmp;
 		tmp = s;
 		tmp += '\0';
 		size = tmp;
 	}
-	if(s.size()<=10 && isNum(s))
+	if(s.size()<=10 && isOctal(s))
 	{
 		string tmp;
 		tmp = s;
@@ -242,10 +245,143 @@ string libtarpp::TarContents::getChkSum()
 
 void libtarpp::TarContents::setChkSum(const string c)
 {
-	string tmp;
-	tmp = "0000000";
-	tmp+='\0';
-	chksum = tmp;
+	if(c.size() == 8 && isNum(c.substr(0,7)) )
+	{
+		chksum=c;
+		return;
+	}
+	if(c.size() == 7 && isNum(c))
+	{
+		string tmp;
+		tmp = c;
+		tmp += '\0';
+		chksum=tmp;
+		return;
+	}
+	if(c.size() <=6 && isNum(c))
+	{
+
+		//cout<<"あ"<<endl;
+		string tmp;
+		tmp = c;
+		for(int i = 1;i<=8-c.size()-2;i++)
+		{
+			tmp = "0" + tmp;
+		}
+		tmp += '\0';
+		tmp += ' ';
+		chksum=tmp;
+		return;
+	}
+	/*
+	cout<<c.size() <<endl;
+	cout<<c << endl;
+	*/
+	throw "Invalid chksum.";
+
+}
+
+void libtarpp::TarContents::autoChkSum()
+{
+	if(
+	getName().size() == 100 &&
+	getMode().size() == 8 &&
+	getUid().size() == 8 &&
+	getGid().size() == 8 &&
+	getSize().size() == 12 &&
+	getMTime().size() == 12 &&
+	getTypeFlag().size() == 1 &&
+	magic.size() == 6 &&
+	version.size() == 2 &&
+	getUName().size() == 32 &&
+	getGName().size() == 32 &&
+	getDevMajor().size() == 8 &&
+	getDevMinor().size() == 8 &&
+	getPrefix().size() == 155
+	)
+	{
+		unsigned int sum = 0;
+		for(char x:getName())
+		{
+			sum +=x;
+		}
+		for(char x:getMode())
+		{
+			sum +=x;
+		}
+		for(char x:getUid())
+		{
+			sum +=x;
+		}
+		for(char x:getGid())
+		{
+			sum +=x;
+		}
+		for(char x:getSize())
+		{
+			sum +=x;
+		}
+		for(char x:getMTime())
+		{
+			sum +=x;
+		}
+		for(char x:getTypeFlag())
+		{
+			sum +=x;
+		}
+		for(char x:getLinkName())
+		{
+			sum +=x;
+		}
+		for(char x:magic)
+		{
+			sum +=x;
+		}
+		for(char x:version)
+		{
+			sum +=x;
+		}
+		for(char x:getUName())
+		{
+			sum +=x;
+		}
+		for(char x:getGName())
+		{
+			sum +=x;
+		}
+		for(char x:getDevMajor())
+		{
+			sum +=x;
+		}
+		for(char x:getDevMinor())
+		{
+			sum +=x;
+		}
+		for(char x:getPrefix())
+		{
+			sum +=x;
+		}
+		sum+=32*8;
+		/*
+		accumulate(getUid().begin(),getUid().end(),0)+
+		accumulate(getGid().begin(),getGid().end(),0)+
+		accumulate(getSize().begin(),getSize().end(),0)+
+		accumulate(getMTime().begin(),getMTime().end(),0)+
+		accumulate(getTypeFlag().begin(),getTypeFlag().end(),0)+
+		accumulate(magic.begin(),magic.end(),0)+
+		accumulate(version.begin(),version.end(),0)+
+		accumulate(getUName().begin(),getUName().end(),0)+
+		accumulate(getGName().begin(),getGName().end(),0)+
+		accumulate(getDevMajor().begin(),getDevMajor().end(),0)+
+		accumulate(getDevMinor().begin(),getDevMinor().end(),0)+
+		accumulate(getPrefix().begin(),getPrefix().end(),0);*/
+		//cout<<oct<<sum<<endl;
+		ostringstream oss_chksum;
+		oss_chksum<<oct<<sum<<flush;
+		setChkSum(oss_chksum.str());
+	}else{
+		throw "Can't calculate chksum: broken header.";
+	}
 }
 
 string libtarpp::TarContents::getTypeFlag()
@@ -306,7 +442,7 @@ void libtarpp::TarContents::setUName(const string un)
 		tmp = un;
 		for(int i = 1;i<=32-un.size();i++)
 		{
-			tmp +='\n';
+			tmp +='\0';
 		}
 		uname = tmp;
 		return;
@@ -332,7 +468,7 @@ void libtarpp::TarContents::setGName(const string gn)
 		tmp = gn;
 		for(int i = 1;i<=32-gn.size();i++)
 		{
-			tmp +='\n';
+			tmp +='\0';
 		}
 		gname = tmp;
 		return;
@@ -370,4 +506,38 @@ void libtarpp::TarContents::setDevMinor(const string dmi)
 	}
 	devminor = tmp;
 
+}
+
+string libtarpp::TarContents::getPrefix()
+{
+	return prefix;
+}
+
+void libtarpp::TarContents::setPrefix(const string p)
+{
+	if(p.size()==155)
+	{
+		prefix = p;
+		return;
+	}
+	if(p.size()<=154)
+	{
+		string tmp;
+		for(int i=1;i<=155-p.size();i++)
+		{
+			tmp += '\0';
+		}
+		prefix = tmp;
+		return;
+	}
+}
+
+shared_ptr<ios> libtarpp::TarContents::getStream()
+{
+	return stream;
+}
+
+void libtarpp::TarContents::setStream(const shared_ptr<ios> s)
+{
+	stream = s;
 }
