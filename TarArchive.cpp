@@ -25,6 +25,11 @@ void libtarpp::TarArchive::load(const string filename)
 		header+=ifs.get();
 		if(i==512)
 		{
+			if(header.substr(0,1)[0]=='\0')
+			{
+				break;
+			}
+
 			TarContents t;
 			t.setName(header.substr(0,100));
 			t.setMode(header.substr(100,8));
@@ -45,9 +50,9 @@ void libtarpp::TarArchive::load(const string filename)
 
 			shared_ptr<fstream> strm(new fstream(filename,ios_base::in));
 			//strm->open(filename,std::ifstream::in);
-			strm->rdbuf()->pubseekoff(0,ios::beg);
-			cout<<strm->rdbuf()->sgetc()<<endl;
-			cout<<hex<<strm<<endl;
+			strm->rdbuf()->pubseekoff(ifs.tellg(),ios::beg);
+			//cout<<strm->rdbuf()->sgetc()<<endl;
+			//cout<<hex<<strm<<endl;
 			t.setStream(strm);
 		
 			contents.insert(contents.begin(),t);
@@ -226,10 +231,10 @@ int main(void)
 	//ta.save("untisitai.tar");
 
 	ta.load("untisitai.tar");
-	cout<<ta.getContents("TarArchive.cpp").getStream()->rdbuf()->sgetc()<<endl;
-	cout<<"check"<<endl;
-	cout<<hex<<ta.getContents("TarArchive.cpp").getStream()<<endl;
-	cout<<ta.getContents("TarArchive.cpp").getName()<<endl;
+	cout<<(char)(ta.getContents("TarWriter.hpp").getStream()->rdbuf()->sgetc())<<endl;
+	//cout<<""<<endl;
+	//cout<<hex<<ta.getContents("TarArchive.cpp").getStream()<<endl;
+	cout<<ta.getContents("TarWriter.hpp").getName()<<endl;
 /*
 	libtarpp::TarArchive t2;
 	t2.addFile("./tntn");

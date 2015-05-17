@@ -532,12 +532,12 @@ void libtarpp::TarContents::setPrefix(const string p)
 	}
 }
 
-shared_ptr<fstream> libtarpp::TarContents::getStream()
+shared_ptr<ios> libtarpp::TarContents::getStream()
 {
 	return stream;
 }
 
-void libtarpp::TarContents::setStream(shared_ptr<fstream> s)
+void libtarpp::TarContents::setStream(shared_ptr<ios> s)
 {
 	stream = s;
 }
