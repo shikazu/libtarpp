@@ -223,6 +223,7 @@ libtarpp::TarContents libtarpp::TarArchive::getContents(const string filename)
 	throw "";
 }
 
+/*
 int main(void)
 {
 	libtarpp::TarArchive ta;
@@ -235,9 +236,10 @@ int main(void)
 	//cout<<""<<endl;
 	//cout<<hex<<ta.getContents("TarArchive.cpp").getStream()<<endl;
 	cout<<ta.getContents("TarWriter.hpp").getName()<<endl;
-/*
 	libtarpp::TarArchive t2;
 	t2.addFile("./tntn");
 	t2.save("unko.tar");
-*/
+
 }
+
+*/

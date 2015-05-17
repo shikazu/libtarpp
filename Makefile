@@ -1,8 +1,8 @@
 CC=g++
-CFLAGS=-std=c++11 -g
+CFLAGS=-std=c++11 -g -fPIC
 
 all: TarArchive.o TarContents.o
-	$(CC) $(CFLAGS) TarArchive.o TarContents.o
+	#$(CC) $(CFLAGS) TarArchive.o TarContents.o
 	$(CC) -shared -Wl,-soname=libfcf.so.1 -o libtarpp.so.1.0.0
 	ar rcs libtarpp.a TarArchive.o TarContents.o
 TarArchive.o:TarArchive.cpp TarArchive.hpp
