@@ -15,6 +15,7 @@ using namespace std;
 
 void libtarpp::TarArchive::load(const string filename)
 {
+	contents.clear();
 	ifstream ifs(filename);
 	long filesize=ifs.seekg(0,ios::end).tellg();
 	ifs.seekg(0,ios::beg);
@@ -42,14 +43,20 @@ void libtarpp::TarArchive::load(const string filename)
 			t.setDevMinor(header.substr(337,8));
 			t.setDevMinor(header.substr(345,155));
 
-			shared_ptr<ios> strm(new ifstream(filename));
-			strm->rdbuf()->pubseekoff(ifs.tellg(),ios::beg);
+			shared_ptr<fstream> strm(new fstream(filename,ios_base::in));
+			//strm->open(filename,std::ifstream::in);
+			strm->rdbuf()->pubseekoff(0,ios::beg);
+			cout<<strm->rdbuf()->sgetc()<<endl;
+			cout<<hex<<strm<<endl;
 			t.setStream(strm);
-			
+		
+			contents.insert(contents.begin(),t);
 			cout<<t.getName()<<endl;
-			cout<<"current:"<<ifs.tellg()<<endl;
+			//cout<<"current:"<<ifs.tellg()<<endl;
+
+			header = "";
 			long sz = stoi(t.getSize().substr(0,11),nullptr,8);
-			if((long)(ifs.tellg())+sz+(512-sz%512)+512>filesize)
+			if((long)(ifs.tellg())+sz+(512-sz%512)+512+512*2>filesize)
 			{
 				break;
 			}
@@ -144,7 +151,7 @@ void libtarpp::TarArchive::addFile(string filename,string path)
 
 	ct.autoChkSum();
 
-	ct.setStream(shared_ptr<ios>(new ifstream(filename)));
+	ct.setStream(shared_ptr<fstream>(new fstream(filename,ios_base::in)));
 	contents.insert(it,ct);
 	
 }
@@ -190,14 +197,39 @@ void libtarpp::TarArchive::save(string filename)
 		ofs<<flush;
 }
 
+libtarpp::TarContents libtarpp::TarArchive::getContents(const string filename)
+{
+	for(auto i : contents)
+	{
+		string tmp;
+		for(auto c : i.getName())
+		{
+			if(c!='\0')
+			{
+				tmp+=c;
+			}
+		}
+		if(tmp==filename)
+		{
+			return i;
+		}
+	}
+	cout<<"nasi "<<endl;
+	throw "";
+}
+
 int main(void)
 {
 	libtarpp::TarArchive ta;
-	ta.addFile("./TarArchive.cpp");
-	ta.addFile("./TarArchive.hpp");
-	ta.save("untisitai.tar");
+	//ta.addFile("./TarArchive.cpp");
+	//ta.addFile("./TarArchive.hpp");
+	//ta.save("untisitai.tar");
 
 	ta.load("untisitai.tar");
+	cout<<ta.getContents("TarArchive.cpp").getStream()->rdbuf()->sgetc()<<endl;
+	cout<<"check"<<endl;
+	cout<<hex<<ta.getContents("TarArchive.cpp").getStream()<<endl;
+	cout<<ta.getContents("TarArchive.cpp").getName()<<endl;
 /*
 	libtarpp::TarArchive t2;
 	t2.addFile("./tntn");
