@@ -17,7 +17,7 @@ namespace libtarpp
 
 		public:
 
-		void load(string filename);
+		void load(const string filename);
 		void save(string filename);
 		void addFile(string filename);
 		void addFile(string filename,string path);

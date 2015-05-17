@@ -12,6 +12,53 @@
 #include <grp.h>
 #endif
 using namespace std;
+
+void libtarpp::TarArchive::load(const string filename)
+{
+	ifstream ifs(filename);
+	long filesize=ifs.seekg(0,ios::end).tellg();
+	ifs.seekg(0,ios::beg);
+	string header;
+	for(int i=1;i<=512;i++)
+	{
+		header+=ifs.get();
+		if(i==512)
+		{
+			TarContents t;
+			t.setName(header.substr(0,100));
+			t.setMode(header.substr(100,8));
+			t.setUid(header.substr(108,8));
+			t.setGid(header.substr(116,8));
+			t.setSize(header.substr(124,12));
+			t.setMTime(header.substr(136,12));
+			t.setChkSum(header.substr(148,8));
+			t.setTypeFlag(header.substr(156,1));
+			t.setLinkName(header.substr(157,100));
+			//header.substr(257,6);
+			//header.substr(263,2);
+			t.setUName(header.substr(265,32));
+			t.setGName(header.substr(297,32));
+			t.setDevMajor(header.substr(329,8));
+			t.setDevMinor(header.substr(337,8));
+			t.setDevMinor(header.substr(345,155));
+
+			shared_ptr<ios> strm(new ifstream(filename));
+			strm->rdbuf()->pubseekoff(ifs.tellg(),ios::beg);
+			t.setStream(strm);
+			
+			cout<<t.getName()<<endl;
+			cout<<"current:"<<ifs.tellg()<<endl;
+			long sz = stoi(t.getSize().substr(0,11),nullptr,8);
+			if((long)(ifs.tellg())+sz+(512-sz%512)+512>filesize)
+			{
+				break;
+			}
+			ifs.seekg((512-sz%512)+sz,ios::cur);
+			i=0;
+			header == "";
+		}
+	}
+}
 void libtarpp::TarArchive::addFile(string filename)
 {
 	int pos = filename.find_last_of("/");
@@ -26,7 +73,10 @@ void libtarpp::TarArchive::addFile(string filename,string path)
 	ct.setName(path);
 
 	struct stat s;
-	stat(filename.c_str(),&s);
+	if(stat(filename.c_str(),&s)!=0)
+	{
+		throw "couldn't stat file:"+filename;
+	}
 
 	ostringstream oss_mode;
 	oss_mode<<oct<<s.st_mode<<flush;
@@ -143,11 +193,14 @@ void libtarpp::TarArchive::save(string filename)
 int main(void)
 {
 	libtarpp::TarArchive ta;
-	ta.addFile("./tntn");
-	ta.addFile("apache2.conf");
+	ta.addFile("./TarArchive.cpp");
+	ta.addFile("./TarArchive.hpp");
 	ta.save("untisitai.tar");
 
+	ta.load("untisitai.tar");
+/*
 	libtarpp::TarArchive t2;
 	t2.addFile("./tntn");
 	t2.save("unko.tar");
+*/
 }

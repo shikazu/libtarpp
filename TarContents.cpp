@@ -245,7 +245,7 @@ string libtarpp::TarContents::getChkSum()
 
 void libtarpp::TarContents::setChkSum(const string c)
 {
-	if(c.size() == 8 && isNum(c.substr(0,7)) )
+	if(c.size() == 8 && isNum(c.substr(0,6)) )
 	{
 		chksum=c;
 		return;
