@@ -1,0 +1,26 @@
+This library is licensed under modified BSD License.
+===========
+
+
+*How to build?
+===========
+
+$ make
+
+*How to use?
+===========
+
+source:
+
+#include "TarArchive.cpp";
+int main(void)
+{
+	TarArchive t;
+	t.load("path/to/tar.tar");
+	t.getContents("path/to/file").getStream(); //A pointer to "ios"
+}
+
+compile:
+
+g++ -std=c++11 source.cpp -I/path/to/header/dir /path/to/libtarpp.a
+
