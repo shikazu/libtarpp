@@ -21,6 +21,7 @@ namespace libtarpp
 		void save(string filename);
 		void addFile(string filename);
 		void addFile(string filename,string path);
+		void addText(const string text,const string path);
 		TarContents getContents(const string filename);
 	};
 }

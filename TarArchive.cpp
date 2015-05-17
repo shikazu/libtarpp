@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <ctime>
 
 #ifdef __linux__
 #include <sys/stat.h>
@@ -135,7 +136,6 @@ void libtarpp::TarArchive::addFile(string filename,string path)
 	{
 		ct.setTypeFlag("6");
 	}
-
 	if(link)
 	{
 		char buf[100];
@@ -159,6 +159,36 @@ void libtarpp::TarArchive::addFile(string filename,string path)
 	ct.setStream(shared_ptr<fstream>(new fstream(filename,ios_base::in)));
 	contents.insert(it,ct);
 	
+}
+
+void libtarpp::TarArchive::addText(const string text,const string path)
+{
+	TarContents t;
+	t.setName(path);
+	t.setMode("010777");
+	#ifdef __linux__
+	struct passwd *pw;
+	pw = getpwuid(getuid());
+	t.setUid(to_string(pw->pw_uid));
+	t.setGid(to_string(pw->pw_gid));
+	t.setUName(pw->pw_name);
+	struct group *g;
+	g = getgrgid(getgid());
+	t.setGName(g->gr_name);
+	#else
+	#endif
+	
+	ostringstream oss_size;
+	oss_size<<oct<<text.size()<<flush;
+	//t.setSize(oss_size.str());
+	t.setSize(oss_size.str());
+	shared_ptr<stringstream> s(new stringstream());
+	*s<<text<<flush;
+
+	t.autoChkSum();
+	t.setStream(s);
+
+	contents.insert(contents.begin(),t);
 }
 
 void libtarpp::TarArchive::save(string filename)
