@@ -14,74 +14,13 @@
 #endif
 using namespace std;
 
-<<<<<<< HEAD
-void libtarpp::TarWriter::load(const string filename)
-{
-	contents.clear();
-	ifstream ifs(filename);
-	long filesize=ifs.seekg(0,ios::end).tellg();
-	ifs.seekg(0,ios::beg);
-	string header;
-	for(int i=1;i<=512;i++)
-	{
-		header+=ifs.get();
-		if(i==512)
-		{
-			if(header.substr(0,1)[0]=='\0')
-			{
-				break;
-			}
-
-			TarContents t;
-			t.setName(header.substr(0,100));
-			t.setMode(header.substr(100,8));
-			t.setUid(header.substr(108,8));
-			t.setGid(header.substr(116,8));
-			t.setSize(header.substr(124,12));
-			t.setMTime(header.substr(136,12));
-			t.setChkSum(header.substr(148,8));
-			t.setTypeFlag(header.substr(156,1));
-			t.setLinkName(header.substr(157,100));
-			//header.substr(257,6);
-			//header.substr(263,2);
-			t.setUName(header.substr(265,32));
-			t.setGName(header.substr(297,32));
-			t.setDevMajor(header.substr(329,8));
-			t.setDevMinor(header.substr(337,8));
-			t.setDevMinor(header.substr(345,155));
-
-			shared_ptr<fstream> strm(new fstream(filename,ios_base::in));
-			//strm->open(filename,std::ifstream::in);
-			strm->rdbuf()->pubseekoff(ifs.tellg(),ios::beg);
-			//cout<<strm->rdbuf()->sgetc()<<endl;
-			//cout<<hex<<strm<<endl;
-			t.setStream(strm);
-		
-			contents.insert(contents.begin(),t);
-			cout<<t.getName()<<endl;
-			//cout<<"current:"<<ifs.tellg()<<endl;
-
-			header = "";
-			long sz = stoi(t.getSize().substr(0,11),nullptr,8);
-			if((long)(ifs.tellg())+sz+(512-sz%512)+512+512*2>filesize)
-			{
-				break;
-			}
-			ifs.seekg((512-sz%512)+sz,ios::cur);
-			i=0;
-			header == "";
-		}
-	}
-}
-=======
->>>>>>> work_TarWriter
-void libtarpp::TarWriter::addFile(string filename)
+void libtarpp::TarWriter::addFile(const string& filename)
 {
 	int pos = filename.find_last_of("/");
 	addFile(filename,filename.substr(pos+1,filename.size()-pos));
 }
 
-void libtarpp::TarWriter::addFile(string filename,string path)
+void libtarpp::TarWriter::addFile(const string& filename,const string& path)
 {
 	
 	auto it = contents.begin();
@@ -164,7 +103,7 @@ void libtarpp::TarWriter::addFile(string filename,string path)
 	
 }
 
-void libtarpp::TarWriter::addText(const string text,const string path)
+void libtarpp::TarWriter::addText(const string& text,const string& path)
 {
 	TarContents t;
 	t.setName(path);
@@ -194,7 +133,7 @@ void libtarpp::TarWriter::addText(const string text,const string path)
 	contents.insert(contents.begin(),t);
 }
 
-void libtarpp::TarWriter::save(string filename)
+void libtarpp::TarWriter::save(const string& filename)
 {
 	ofstream ofs(filename);
 	for(auto it:contents)
@@ -235,30 +174,16 @@ void libtarpp::TarWriter::save(string filename)
 		ofs<<flush;
 }
 
-<<<<<<< HEAD
-libtarpp::TarContents libtarpp::TarWriter::getContents(const string filename)
+void libtarpp::TarWriter::addBinary(const vector<uint8_t>& data,const string& path)
 {
-	for(auto i : contents)
+	ostringstream ss;
+	for(size_t i = 0; i<data.size();i++)
 	{
-		string tmp;
-		for(auto c : i.getName())
-		{
-			if(c!='\0')
-			{
-				tmp+=c;
-			}
-		}
-		if(tmp==filename)
-		{
-			return i;
-		}
+		ss<<(char) data[i];
 	}
-	cout<<"nasi "<<endl;
-	throw "";
+	ss<<flush;
+	addText(ss.str(),path);
 }
-=======
->>>>>>> work_TarWriter
-
 /*
 int main(void)
 {
