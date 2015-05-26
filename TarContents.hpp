@@ -32,7 +32,7 @@ namespace libtarpp
 		string prefix;
 
 
-		shared_ptr<ios> stream;
+		shared_ptr<istream> stream;
 
 		bool isOctal(const string numstring);
 		bool isNum(const string numstring);
@@ -68,7 +68,7 @@ namespace libtarpp
 		void setDevMinor(const string dmi);
 		string getPrefix();
 		void setPrefix(const string p);
-		shared_ptr<ios> getStream();
-		void setStream(shared_ptr<ios> s);
+		shared_ptr<istream> getStream();
+		void setStream(shared_ptr<istream> s);
 	};
 }
