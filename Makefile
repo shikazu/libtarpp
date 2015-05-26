@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-Wall -std=c++11 -g -fPIC
 OUTPUT=libtarpp.a
-OBJS=TarArchive.o TarContents.o
+OBJS=TarArchive.o TarContents.o TarWriter.o
 all: $(OBJS)
 	ar rcs $(OUTPUT) $(OBJS) $(LIBTARPP)
 #CCellDefinition.o:CCellDefinition.cpp CCellDefinition.hpp

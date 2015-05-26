@@ -1,4 +1,4 @@
-#include "TarArchive.hpp"
+#include "TarWriter.hpp"
 #include "TarContents.hpp"
 #include <vector>
 #include <string>
@@ -14,6 +14,7 @@
 #endif
 using namespace std;
 
+<<<<<<< HEAD
 void libtarpp::TarWriter::load(const string filename)
 {
 	contents.clear();
@@ -72,6 +73,8 @@ void libtarpp::TarWriter::load(const string filename)
 		}
 	}
 }
+=======
+>>>>>>> work_TarWriter
 void libtarpp::TarWriter::addFile(string filename)
 {
 	int pos = filename.find_last_of("/");
@@ -232,6 +235,7 @@ void libtarpp::TarWriter::save(string filename)
 		ofs<<flush;
 }
 
+<<<<<<< HEAD
 libtarpp::TarContents libtarpp::TarWriter::getContents(const string filename)
 {
 	for(auto i : contents)
@@ -252,6 +256,8 @@ libtarpp::TarContents libtarpp::TarWriter::getContents(const string filename)
 	cout<<"nasi "<<endl;
 	throw "";
 }
+=======
+>>>>>>> work_TarWriter
 
 /*
 int main(void)
