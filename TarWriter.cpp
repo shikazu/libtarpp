@@ -14,13 +14,13 @@
 #endif
 using namespace std;
 
-void libtarpp::TarWriter::addFile(string filename)
+void libtarpp::TarWriter::addFile(const string& filename)
 {
 	int pos = filename.find_last_of("/");
 	addFile(filename,filename.substr(pos+1,filename.size()-pos));
 }
 
-void libtarpp::TarWriter::addFile(string filename,string path)
+void libtarpp::TarWriter::addFile(const string& filename,const string& path)
 {
 	
 	auto it = contents.begin();
@@ -103,7 +103,7 @@ void libtarpp::TarWriter::addFile(string filename,string path)
 	
 }
 
-void libtarpp::TarWriter::addText(const string text,const string path)
+void libtarpp::TarWriter::addText(const string& text,const string& path)
 {
 	TarContents t;
 	t.setName(path);
@@ -133,7 +133,7 @@ void libtarpp::TarWriter::addText(const string text,const string path)
 	contents.insert(contents.begin(),t);
 }
 
-void libtarpp::TarWriter::save(string filename)
+void libtarpp::TarWriter::save(const string& filename)
 {
 	ofstream ofs(filename);
 	for(auto it:contents)
@@ -174,7 +174,16 @@ void libtarpp::TarWriter::save(string filename)
 		ofs<<flush;
 }
 
-
+void libtarpp::TarWriter::addBinary(const vector<uint8_t>& data,const string& path)
+{
+	ostringstream ss;
+	for(size_t i = 0; i<data.size();i++)
+	{
+		ss<<(char) data[i];
+	}
+	ss<<flush;
+	addText(ss.str(),path);
+}
 /*
 int main(void)
 {

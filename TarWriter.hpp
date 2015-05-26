@@ -18,10 +18,11 @@ namespace libtarpp
 		public:
 
 		//void load(const string filename);
-		void save(string filename);
-		void addFile(string filename);
-		void addFile(string filename,string path);
-		void addText(const string text,const string path);
+		void save(const string& filename);
+		void addFile(const string& filename);
+		void addFile(const string& filename,const string& path);
+		void addText(const string& text,const string& path);
+		void addBinary(const vector<uint8_t>& data,const string& path);
 		//TarContents getContents(const string filename);
 	};
 }
