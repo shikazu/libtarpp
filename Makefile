@@ -1,14 +1,20 @@
 CC=g++
-CFLAGS=-std=c++11 -g -fPIC
-
-all: TarArchive.o TarContents.o
-	#$(CC) $(CFLAGS) TarArchive.o TarContents.o
-	$(CC) -shared -Wl,-soname=libfcf.so.1 -o libtarpp.so.1.0.0
-	ar rcs libtarpp.a TarArchive.o TarContents.o
-TarArchive.o:TarArchive.cpp TarArchive.hpp
-	$(CC) $(CFLAGS) -c TarArchive.cpp
-TarContents.o:TarContents.cpp TarContents.hpp
-	$(CC) $(CFLAGS) -c TarContents.cpp
+CFLAGS=-Wall -std=c++11 -g -fPIC
+OUTPUT=libtarpp.a
+OBJS=TarArchive.o TarContents.o TarWriter.o
+all: $(OBJS)
+	ar rcs $(OUTPUT) $(OBJS) $(LIBTARPP)
+#CCellDefinition.o:CCellDefinition.cpp CCellDefinition.hpp
+#	$(CC) $(CFLAGS) -c $< -I/home/carrot031/libtarpp
+#CCellDefinition.o:CCell.cpp CCell.hpp
+#	$(CC) $(CFLAGS) -c $< -I/home/carrot031/libtarpp
+%.o:%.cpp %.hpp
+	$(CC) $(CFLAGS) -c $< $(INCLUDE)
+#Size.o:Size.cpp Size.hpp
+#	$(CC) -std=c++11 -c Size.cpp
+#Point.o:Point.cpp Point.hpp
+#	$(CC) -std=c++11 -c Point.cpp
 
 clean:
-	rm -rf *.o *.a libtarpp.so* libtarpp.a a.out
+	rm -f $(OBJS) $(OUTPUT)
+
