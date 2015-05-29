@@ -33,7 +33,7 @@ void libtarpp::TarReader::load(const string& filename)
 
 			TarContents t;
 		
-			cout<<header<<endl;
+			//cout<<header<<endl;
 
 
 			t.setName(header.substr(0,100));
