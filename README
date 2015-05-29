@@ -12,12 +12,13 @@ $ make
 
 source:
 
-#include "TarArchive.cpp";
+#include "TarReader.hpp"
+#include <iostream>
 int main(void)
 {
-	TarArchive t;
+	TarReader t;
 	t.load("path/to/tar.tar");
-	t.getContents("path/to/file").getStream(); //A pointer to "ios"
+	cout << t.readText("filename") << endl;
 }
 
 compile:
