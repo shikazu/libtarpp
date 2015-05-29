@@ -47,7 +47,7 @@ void libtarpp::TarWriter::addFile(const string& filename,const string& path)
 
 	ostringstream oss_size;
 	oss_size<<oct<<s.st_size<<flush;
-	ct.setSize(oss_size.str());
+	ct.setRawSize(oss_size.str());
 	
 
 	ostringstream oss_mtime;
@@ -123,7 +123,7 @@ void libtarpp::TarWriter::addText(const string& text,const string& path)
 	ostringstream oss_size;
 	oss_size<<oct<<text.size()<<flush;
 	//t.setSize(oss_size.str());
-	t.setSize(oss_size.str());
+	t.setRawSize(oss_size.str());
 	shared_ptr<stringstream> s(new stringstream());
 	*s<<text<<flush;
 
@@ -142,7 +142,7 @@ void libtarpp::TarWriter::save(const string& filename)
 		ofs<<it.getMode()<<flush;
 		ofs<<it.getUid()<<flush;
 		ofs<<it.getGid()<<flush;
-		ofs<<it.getSize()<<flush;
+		ofs<<it.getRawSize()<<flush;
 		ofs<<it.getMTime()<<flush;
 		ofs<<it.getChkSum()<<flush;
 		ofs<<it.getTypeFlag()<<flush;

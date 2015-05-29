@@ -36,7 +36,7 @@ void libtarpp::TarArchive::load(const string filename)
 			t.setMode(header.substr(100,8));
 			t.setUid(header.substr(108,8));
 			t.setGid(header.substr(116,8));
-			t.setSize(header.substr(124,12));
+			t.setRawSize(header.substr(124,12));
 			t.setMTime(header.substr(136,12));
 			t.setChkSum(header.substr(148,8));
 			t.setTypeFlag(header.substr(156,1));
@@ -61,7 +61,7 @@ void libtarpp::TarArchive::load(const string filename)
 			//cout<<"current:"<<ifs.tellg()<<endl;
 
 			header = "";
-			long sz = stoi(t.getSize().substr(0,11),nullptr,8);
+			long sz = stoi(t.getRawSize().substr(0,11),nullptr,8);
 			if((long)(ifs.tellg())+sz+(512-sz%512)+512+512*2>filesize)
 			{
 				break;
@@ -105,7 +105,7 @@ void libtarpp::TarArchive::addFile(string filename,string path)
 
 	ostringstream oss_size;
 	oss_size<<oct<<s.st_size<<flush;
-	ct.setSize(oss_size.str());
+	ct.setRawSize(oss_size.str());
 	
 
 	ostringstream oss_mtime;
@@ -181,7 +181,7 @@ void libtarpp::TarArchive::addText(const string text,const string path)
 	ostringstream oss_size;
 	oss_size<<oct<<text.size()<<flush;
 	//t.setSize(oss_size.str());
-	t.setSize(oss_size.str());
+	t.setRawSize(oss_size.str());
 	shared_ptr<stringstream> s(new stringstream());
 	*s<<text<<flush;
 
@@ -200,7 +200,7 @@ void libtarpp::TarArchive::save(string filename)
 		ofs<<it.getMode()<<flush;
 		ofs<<it.getUid()<<flush;
 		ofs<<it.getGid()<<flush;
-		ofs<<it.getSize()<<flush;
+		ofs<<it.getRawSize()<<flush;
 		ofs<<it.getMTime()<<flush;
 		ofs<<it.getChkSum()<<flush;
 		ofs<<it.getTypeFlag()<<flush;

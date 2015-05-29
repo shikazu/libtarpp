@@ -11,7 +11,7 @@ using namespace std;
 
 namespace libtarpp
 {
-	class TarWriter
+	class TarReader
 	{
 		vector<TarContents> contents;
 
@@ -21,6 +21,7 @@ namespace libtarpp
 
 		string readText(const string& path);
 		vector<uint8_t> readBinary(const string& path);
-		//TarContents getContents(const string filename);
+		private:
+		TarContents getContents(const string& path);
 	};
 }

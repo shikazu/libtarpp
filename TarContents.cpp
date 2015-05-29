@@ -10,7 +10,7 @@ libtarpp::TarContents::TarContents()
 	setMode("0100777");
 	setUid("0");
 	setGid("0");
-	setSize("0");
+	setRawSize("0");
 	setMTime("0");
 	setTypeFlag("0");
 	setLinkName("");
@@ -176,12 +176,12 @@ void libtarpp::TarContents::setGid(const string g)
 	gid = regulateUGId(g);
 }
 
-string libtarpp::TarContents::getSize()
+string libtarpp::TarContents::getRawSize()
 {
 	return size;
 }
 
-void libtarpp::TarContents::setSize(const string s)
+void libtarpp::TarContents::setRawSize(const string s)
 {
 	if(s.size() == 12 && isOctal(s.substr(0,11)))
 	{
@@ -288,7 +288,7 @@ void libtarpp::TarContents::autoChkSum()
 	getMode().size() == 8 &&
 	getUid().size() == 8 &&
 	getGid().size() == 8 &&
-	getSize().size() == 12 &&
+	getRawSize().size() == 12 &&
 	getMTime().size() == 12 &&
 	getTypeFlag().size() == 1 &&
 	magic.size() == 6 &&
@@ -317,7 +317,7 @@ void libtarpp::TarContents::autoChkSum()
 		{
 			sum +=x;
 		}
-		for(char x:getSize())
+		for(char x:getRawSize())
 		{
 			sum +=x;
 		}
