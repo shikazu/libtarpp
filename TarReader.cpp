@@ -32,6 +32,10 @@ void libtarpp::TarReader::load(const string& filename)
 			}
 
 			TarContents t;
+		
+			cout<<header<<endl;
+
+
 			t.setName(header.substr(0,100));
 			t.setMode(header.substr(100,8));
 			t.setUid(header.substr(108,8));
@@ -77,8 +81,14 @@ string libtarpp::TarReader::readText(const string& path)
 {
 	TarContents t = getContents(path);
 	shared_ptr<istream> stream = t.getStream();
-	stream->rdbuf()->sbumpc();
-	return "";
+	ostringstream oss;
+	for(size_t i=0; i<t.getSize();i++)
+	{
+		oss<<(char)stream->rdbuf()->sbumpc();
+	}
+	oss<<flush;
+
+	return oss.str();
 }
 
 libtarpp::TarContents libtarpp::TarReader::getContents(const string& path)

@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <numeric>
 #include "TarContents.hpp"
@@ -174,6 +175,28 @@ string libtarpp::TarContents::getGid()
 void libtarpp::TarContents::setGid(const string g)
 {
 	gid = regulateUGId(g);
+}
+
+size_t libtarpp::TarContents::getSize()
+{
+	return (size_t)stoi(getRawSize().substr(0,11),nullptr,8);
+}
+
+void libtarpp::TarContents::setSize(const size_t& sz)
+{
+	ostringstream oss;
+	oss<<oct<<sz;
+	string str = oss.str();
+	if(str.size() < 12)
+	{
+		for(int i = 1; i<=(11-str.size());i++)
+		{
+			str="0" + str;
+		}
+		str+='\0';
+		setRawSize(str);
+	}
+	throw "error!";
 }
 
 string libtarpp::TarContents::getRawSize()

@@ -47,8 +47,12 @@ namespace libtarpp
 		void setUid(const string id);
 		string getGid();
 		void setGid(const string id);
+		
+		size_t getSize();
+		void setSize(const size_t& sz);
 		string getRawSize();
 		void setRawSize(const string s);
+
 		string getMTime();
 		void setMTime(const string m);
 		string getChkSum();
