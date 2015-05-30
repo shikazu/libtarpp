@@ -10,6 +10,10 @@ int main()
 	//cout<<tr.readText("description")<<endl;
 		
 	TarWriter tw;
+	tw.addText("aa","abcdefg");
+	tw.addText("dss","empty");
+	tw.addText("","champion");
+	tw.addText("timp","NAL");
 	tw.addBinary(tr.readBinary("png"),"png");
 	tw.save("written.tar");
 

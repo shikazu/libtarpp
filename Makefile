@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-Wall -std=c++11 -g -fPIC
+CFLAGS=-Wall -std=c++11 -g -fPIC -O0
 OUTPUT=libtarpp.a
 OBJS=TarArchive.o TarContents.o TarWriter.o TarReader.o
 all: $(OBJS)

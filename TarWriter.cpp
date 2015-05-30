@@ -99,7 +99,7 @@ void libtarpp::TarWriter::addFile(const string& filename,const string& path)
 	ct.autoChkSum();
 
 	ct.setStream(shared_ptr<fstream>(new fstream(filename,ios_base::in)));
-	contents.insert(it,ct);
+	contents.push_back(ct);
 	
 }
 
@@ -130,7 +130,8 @@ void libtarpp::TarWriter::addText(const string& text,const string& path)
 	t.autoChkSum();
 	t.setStream(s);
 
-	contents.insert(contents.begin(),t);
+	contents.push_back(t);
+	//cout<<contents.size() <<endl;
 }
 
 void libtarpp::TarWriter::save(const string& filename)
@@ -138,7 +139,8 @@ void libtarpp::TarWriter::save(const string& filename)
 	ofstream ofs(filename);
 	for(auto it:contents)
 	{
-		ofs<<it.getName()<<flush;
+		//cout<<"processing:" +it.getName()<<endl;
+		ofs.write(it.getName().data(),it.getName().size());
 		ofs<<it.getMode()<<flush;
 		ofs<<it.getUid()<<flush;
 		ofs<<it.getGid()<<flush;
@@ -159,12 +161,21 @@ void libtarpp::TarWriter::save(const string& filename)
 			ofs<<'\0';
 		}
 		ofs<<flush;
+		if(it.getSize()==0)
+		{
+			//cout<<"0"<<endl;
+			continue;
+		}
 		ofs << (it.getStream())->rdbuf()<<flush;
-		long size = (it.getStream())->rdbuf()->pubseekoff(0,ios_base::end);
+		long size = it.getSize();
+
+	
+
 		for(int i=1; i<=512-size%512;i++)
 		{
 			ofs<<'\0';
 		}
+		//cout<<"finished:"+it.getName()<<endl;
 	}
 
 		for(int i=1; i<=512*2;i++)
@@ -172,6 +183,8 @@ void libtarpp::TarWriter::save(const string& filename)
 			ofs<<'\0';
 		}
 		ofs<<flush;
+
+		ofs.close();
 }
 
 void libtarpp::TarWriter::addBinary(const vector<uint8_t>& data,const string& path)
