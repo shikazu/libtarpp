@@ -91,6 +91,18 @@ string libtarpp::TarReader::readText(const string& path)
 	return oss.str();
 }
 
+vector<uint8_t> libtarpp::TarReader::readBinary(const string& path)
+{
+	TarContents t = getContents(path);
+	shared_ptr<istream> stream = t.getStream();
+	vector<uint8_t> data;
+	for(size_t i=0;i<t.getSize();i++)
+	{
+		data.push_back((uint8_t)stream->rdbuf()->sbumpc());
+	}
+	return data;
+}
+
 libtarpp::TarContents libtarpp::TarReader::getContents(const string& path)
 {
 	for(auto i : contents)
