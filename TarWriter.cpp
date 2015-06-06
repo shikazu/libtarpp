@@ -140,6 +140,7 @@ void libtarpp::TarWriter::save(const string& filename)
 	for(auto it:contents)
 	{
 		//cout<<"processing:" +it.getName()<<endl;
+		cout<<"libtarpp: saving "+it.getName()<<endl;
 		ofs.write(it.getName().data(),it.getName().size());
 		ofs<<it.getMode()<<flush;
 		ofs<<it.getUid()<<flush;

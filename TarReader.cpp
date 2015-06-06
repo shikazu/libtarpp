@@ -37,6 +37,7 @@ void libtarpp::TarReader::load(const string& filename)
 
 
 			t.setName(header.substr(0,100));
+			cout<<"libtarpp: loading "+t.getName()<<endl;
 			t.setMode(header.substr(100,8));
 			t.setUid(header.substr(108,8));
 			t.setGid(header.substr(116,8));
@@ -51,7 +52,7 @@ void libtarpp::TarReader::load(const string& filename)
 			t.setGName(header.substr(297,32));
 			t.setDevMajor(header.substr(329,8));
 			t.setDevMinor(header.substr(337,8));
-			t.setDevMinor(header.substr(345,155));
+			t.setPrefix(header.substr(345,155));
 
 			shared_ptr<fstream> strm(new fstream(filename,ios_base::in));
 			//strm->open(filename,std::ifstream::in);
@@ -65,12 +66,15 @@ void libtarpp::TarReader::load(const string& filename)
 			//cout<<"current:"<<ifs.tellg()<<endl;
 
 			header = "";
-			long sz = stoi(t.getRawSize().substr(0,11),nullptr,8);
+			long sz = t.getSize();
 			if((long)(ifs.tellg())+sz+(512-sz%512)+512+512*2>filesize)
 			{
 				break;
 			}
-			ifs.seekg((512-sz%512)+sz,ios::cur);
+			if(sz != 0)
+			{
+				ifs.seekg((512-sz%512)+sz,ios::cur);
+			}
 			i=0;
 			header == "";
 		}
@@ -120,7 +124,7 @@ libtarpp::TarContents libtarpp::TarReader::getContents(const string& path)
 			return i;
 		}
 	}
-	cout<<"nasi "<<endl;
+	cerr<<"libtarpp: No such a contents:"+path<<endl;
 	throw "";
 }
 
